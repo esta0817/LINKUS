@@ -1,0 +1,29 @@
+	<!--
+	<p id="demo"></p>
+
+	<script>
+	/*	//connectioinString의 모습 : var connectionString = "postgres://userName:password@serverName/ip:port/nameOfDatabase";
+		var connectionString = "postgres://postgres:postgres@PostgreSQL 9.4/localhost:5432/PlacePOI";
+
+		var googleApiKey = "AIzaSyBGhdrggquJnkOv4MP5JfWVGweRGuTlBDo";
+		var url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=37.696474,126.762652&radius=5000&types=food&key="+googleApiKey;
+		var x = ""; //문자열 저장할 변수
+		var myObj;
+
+		var xmlhttp = new XMLHttpRequest();
+		xmlhttp.onreadystatechange = function() 
+		{
+			if (this.readyState == 4 && this.status == 200) {
+				myObj = JSON.parse(this.responseText);
+				x += "name : "+myObj.results[0].name;
+				x += "   lat : "+myObj.results[0].geometry.location.lat;
+				x += "   lng : "+myObj.results[0].geometry.location.lng;
+				document.getElementById("demo").innerHTML = x;
+			}
+		};
+		
+		xmlhttp.open("GET", url, true);
+		xmlhttp.send();
+
+*/
+	</script>-->

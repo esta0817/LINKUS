@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<title>LINKUS</title>
+
+	<meta charset="UTF-8">
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<meta name="description" content="" />
+	<meta name="keywords" content="" />
+	<script src="js/jquery.min.js"></script>
+	<script src="js/skel.min.js"></script>
+	<script src="js/skel-layers.min.js"></script>
+	<script src="js/init.js"></script>
+	<meta charset = "utf-8">
+
+
+	<script language = "javascript" src = "https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry"></script>
+
+	<script>
+
+		var googleMap;
+		var googleMap = new google.maps.DirectionsService();
+
+		//var xmlhttp = new XMLHttpRequest();
+		//var url = "http://uosavalon.xyz:8080/tran/parkinglot.json";//DB에 저장된 json파일 요청
+		
+
+		var remain;
+		var xmlhttp_p = new XMLHttpRequest();
+
+		var url_p = "http://openAPI.seoul.go.kr:8088/575870716a373766343247784a5352/json/PublicParkingAvaliable/1/30/";
+
+		xmlhttp_p.onreadystatechange = function(){
+			if(xmlhttp_p.readyState == 4 && xmlhttp_p.status == 200){
+				remain = JSON.parse(xmlhttp_p.responseText);
+			}
+		}
+		
+		xmlhttp_p.open("GET", url_p, true);
+		xmlhttp_p.send();
+
+		function init_g(){
+
+			g_directionsDisplay = new google.maps.DirectionsRenderer();
+
+			var mapProp = {
+				center:new google.maps.LatLng(37.5830214,127.0588606),
+				zoom:15,
+				mapTypeId:google.maps.MapTypeId.ROADMAP
+			};
+			var map = new google.maps.Map(document.getElementById("google_map"),mapProp);
+			g_directionsDisplay.setMap(map);
+			
+		}
+
+		window.onload = function(){
+			//init_g();
+			init_t();
+		}
+
+	</script>
+
+</head>
+<body>
+	<!--<div style = "position:absolute;float:right; border: 2px solid black; padding : 5px; margin : 316px 0px 0px 310px;">-->
+	<!--<div id = "t_map" style = "position:relative; display:inline-block; white-space:nowrap;width:314px; height:478px;"></div>-->
+	<div id = "google_map" style = "position:relative; display:inline-block; white-space:nowrap; width:314px; height:478px;"></div>
+	
+</body>
+</html>

@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<script
+
+	src="https://code.jquery.com/jquery-3.1.1.js"
+
+	integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="
+
+	crossorigin="anonymous"></script>	
+</head>
+<body>
+
+	<h2>Use the XMLHttpRequest to get the content of a file.</h2>
+	<p>The content is written in JSON format, and can easily be converted into a JavaScript object.</p>
+
+	<p id="demo"></p>
+
+	<script type="text/javascript">
+		
+
+		var googleApiKey = "AIzaSyBGhdrggquJnkOv4MP5JfWVGweRGuTlBDo";
+		var url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=37.696474,126.762652&radius=5000&types=food&key="+googleApiKey;
+		var x = "";
+		var myObj;
+		var name;
+		var lat;
+		var lng;
+
+		$.getJSON(url, function(data){
+			//myObj = JSON.parse(this.responseText); //Already JsonData
+			name = data.results[0].name;
+			lat = data.results[0].geometry.location.lat;
+			lng = data.results[0].geometry.location.lng;
+
+			document.getElementById("demo").innerHTML = name;
+		});
+
+		//document.getElementById("demo").innerHTML = name;
+
+	</script>
+</body>
+</html>
+<!--
+		/*
+		var xmlhttp = new XMLHttpRequest();
+		xmlhttp.onreadystatechange = function() 
+		{
+			if (this.readyState == 4 && this.status == 200) {
+				myObj = JSON.parse(this.responseText);
+				name = myObj.results[0].name;
+				//x += "name : "+myObj.results[0].name;
+				//x += "   lat : "+myObj.results[0].geometry.location.lat;
+				//x += "   lng : "+myObj.results[0].geometry.location.lng;
+				//document.getElementById("demo").innerHTML = name;
+			}
+		};
+
+
+		xmlhttp.open("GET", url, true);
+		
+		xmlhttp.send();
+		*/
+		-->
