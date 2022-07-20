@@ -1,0 +1,84 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Google Place API</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<script
+
+	
+	src="jquery-3.2.1.min.js"
+
+	integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="
+
+	crossorigin="anonymous"></script>
+
+
+</head>
+<body>
+
+	<div style="max-width:1564px">
+	</div>
+	<script type="text/javascript">
+		//src="https://code.jquery.com/jquery-3.1.1.js"
+		var requests;  //return된 ajax()
+		//Promise Method
+		function UpdateRecord(latitude, longitude, typeno)
+		{
+			//2. input data in postgres
+			return jQuery.ajax({
+				type: "POST",
+				data: 'data='+latitude+', '+longitude+', '+typeno, // <-- 넘겨주는 data
+				url: "update.php",
+				cache: false,
+			}).then(function (res) {
+				// 성공시 action
+			}).catch(function (err) {
+				console.error(err);
+			});
+		}
+
+		//1. Get Json file from Google
+		//좌측상단
+		var base_lat = 37.576972;
+		var base_lng = 126.902609;
+
+		//우측하단
+		var last_lat = 37.531374;
+		var last_lng = 127.012664;
+
+		var googleApiKey = "AIzaSyBGhdrggquJnkOv4MP5JfWVGweRGuTlBDo";
+
+		for(var i = base_lat; i>last_lat; i=i-0.0009)
+		{
+			for(var j = base_lng; j<last_lng; j=j+0.001475)
+			{
+				var url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+String(i)+","+String(j)+"&radius=100&types=restaurant&keyword=western&key="+googleApiKey;
+
+				//console.log(url);
+
+				$.getJSON(url).then(function (data) 
+				{
+					var requests = data.results.map(function (res, index) 
+					{
+						//json 파일 해석
+						var lat = res.geometry.location.lat;
+						var lng = res.geometry.location.lng;
+						var typeno = 15;
+						return UpdateRecord(lat, lng, typeno);
+					});
+					return $.when(requests);
+				//return Promise.all(requests);
+				}).then(function (responses) {
+					console.log(responses);
+				}).catch(function (err) {
+					console.error(err);
+				});
+			}
+		}
+	</script>
+
+</body>
+</html>

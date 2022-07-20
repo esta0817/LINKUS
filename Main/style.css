@@ -1,0 +1,353 @@
+﻿#home{
+    background-color: white;
+    width: 100%;
+}
+
+body {
+    height: 100%;
+    margin-top: 4%;
+    background: #ACDBC9;
+}
+
+/*헤더부분*/
+.home-section
+{
+    height: 45%;
+    background-color: white;
+    margin:0 auto;
+    padding-bottom: 8%;
+
+}
+
+.seoulmap{
+    position:absolute;
+    margin-left: 30%;
+    -webkit-animation: mymove ; 
+    -webkit-animation-duration: 0.5s; 
+   -webkit-animation-fill-mode: forwards; 
+
+}
+@-webkit-keyframes mymove {
+    from {top: 10%;}
+    to {top: 30%}
+}
+
+.smallpoi{
+    opacity: 0;
+    position: absolute;
+    margin-left: 40%;
+    margin-top: 15%;
+    -webkit-animation: smallmove ; 
+    -webkit-animation-duration: 0.5s;
+    -webkit-animation-delay: 1s;
+    -webkit-animation-fill-mode: forwards; 
+}
+@-webkit-keyframes smallmove {
+    from {opacity: 0} 
+  to {opacity: 1}
+}
+
+
+.smallpoi2{
+    opacity: 0;
+    position: absolute;
+    margin-left: 45%;
+    margin-top: 20%;
+    -webkit-animation: smallmove2 ; 
+    -webkit-animation-duration: 0.5s; 
+    -webkit-animation-delay: 1.5s;
+    -webkit-animation-fill-mode: forwards; 
+}
+@-webkit-keyframes smallmove2 {
+    from {opacity: 0} 
+  to {opacity: 1}
+}
+
+.smallpoi3{
+    opacity: 0;
+    position: absolute;
+    margin-left: 57%;
+    margin-top: 16%;
+    -webkit-animation: smallmove3 ; 
+    -webkit-animation-duration: 0.5s;
+    -webkit-animation-delay: 2s;
+    -webkit-animation-fill-mode: forwards; 
+}
+@-webkit-keyframes smallmove3 {
+    from {opacity: 0} 
+  to {opacity: 1}
+}
+
+.smallpoi4{
+    opacity: 0;
+    position: absolute;
+    margin-left: 60%;
+    margin-top: 22%;
+    -webkit-animation: smallmove4 ; 
+    -webkit-animation-duration: 0.5s; 
+    -webkit-animation-delay: 2.5s;
+    -webkit-animation-fill-mode: forwards; 
+}
+@-webkit-keyframes smallmove4 {
+    from {opacity: 0} 
+  to {opacity: 1}
+}
+
+.middlepoi{
+    opacity:0;
+    position: absolute;
+    margin-left: 50%;
+    margin-top: 17%;    
+    -webkit-animation: middlefade ; 
+    -webkit-animation-duration: 1s; 
+    -webkit-animation-delay: 3s;
+    -webkit-animation-fill-mode: forwards; 
+}
+@-webkit-keyframes middlefade {
+  from {opacity: 0} 
+  to {opacity: 1}
+}
+
+.linkus{
+    opacity:0;
+    position: absolute;
+    margin-left: 21%;
+    -webkit-animation: middlefade ; 
+    -webkit-animation-duration: 1s; 
+    -webkit-animation-delay: 3.5s;
+    -webkit-animation-fill-mode: forwards; 
+}
+@-webkit-keyframes middlefade {
+  from {opacity: 0} 
+  to {opacity: 1}
+}
+
+.start{
+    opacity:0;
+    position: absolute;
+    margin-left: 44%;
+    margin-top:32%;
+    -webkit-animation: middlefade ;
+    -webkit-animation-duration: 1s; 
+    -webkit-animation-delay: 4s;
+    -webkit-animation-fill-mode: forwards; 
+}
+@-webkit-keyframes middlefade {
+  from {opacity: 0} 
+  to {opacity: 1}
+}
+
+/*소개부분*/
+#AboutLinkus{
+    position: relative;
+    height: 140%;
+}
+.About{
+	margin-left: 36%;
+}
+
+.bus{
+	position: absolute;
+	margin-top: 2%;
+	margin-left: 28%;
+}
+.distri{
+	position: absolute;
+	margin-top: 2%;
+	margin-left: 53%;
+}
+.time{
+	position: absolute;
+    margin-top: 27%;
+    margin-left: 28%;
+}
+.poi{
+	position: absolute;
+	margin-top: 27%;
+	margin-left: 53%;
+}
+.intro{
+	position: absolute;
+	margin-top: 55%;
+    margin-left: 10%;
+
+	
+}
+
+/*본문*/
+#letstart{
+    position:absolute;
+    margin-left: 35%;
+
+}
+
+    #map{
+    width: 80%;
+    margin: 0 auto;
+    margin-top: 10%;  
+    border-style: solid;
+    border-color: #FFF;
+}
+
+#purposeno{
+    margin-left: 100px;
+}
+
+    .body-wrapper{
+        position: relative;
+    }
+    .participant{
+        position: absolute;
+        top: 10px;
+        left: 700px;
+    }
+    .input{
+        margin-top: 50px;
+        margin-left: 10%;
+        background-color: #FFF;
+        border: 2.5px solid rgb(244,177,131);
+        width:300px;
+        border-radius: 8px;
+        padding-top: 3px;
+        padding-bottom: 3px;
+        font-size: 20px;
+        color: #6C5B7B;
+        font-weight: bold;
+        font-family: '제주 고딕';
+        text-align: center;
+        text-shadow: 0 0 4px rgb(173,220,201);  
+    }
+    .style{
+        margin-bottom:30px;
+        margin-left:  10%;
+        font-family: '제주 고딕';
+        font-weight: bold;
+        font-size: 20px;
+        color: white;
+        text-shadow: 0 0 2px rgb(127,127,127); 
+    }
+
+    .type{
+        margin-bottom: 100px;
+        margin-left: 10%;
+    }
+    .type input[type=button]{
+        background-color: #FFF;
+        border: 2.5px solid rgb(108,92,124);
+        width:80px;
+        height: 35px;
+        border-radius: 8px;
+        font-size: 16px;
+        color: #6C5B7B;
+        font-weight: bold;
+        font-family: '제주 고딕';
+        text-align: center;
+        cursor: pointer;
+    }
+
+   p{       
+        margin-top: -5px;
+        background-color: #FFF;
+        border: 2.5px solid rgb(244,177,131);
+        width:400px;
+        border-radius: 8px;
+        padding-top: 3px;
+        padding-bottom: 3px;
+        font-size: 20px;
+        color: #6C5B7B;
+        font-weight: bold;
+        font-family: '제주 고딕';
+        text-align: center;
+        text-shadow: 0 0 4px rgb(173,220,201);  
+    }
+
+  .participant input[name=addButton]{
+ 	background-color: #FFF;
+        border: 2.5px solid rgb(108,92,124);
+        width:260px;
+        height: 35px;
+        border-radius: 8px;
+        font-size: 16px;
+        color: #6C5B7B;
+        font-weight: bold;
+        font-family: '제주 고딕';
+        text-align: center;
+        cursor: pointer;
+    }
+  .participant input[name=putposition]{
+ 	background-color: #FFF;
+	margin-top: 3px;
+        border: 2.5px solid rgb(108,92,124);
+        width:260px;
+        height: 35px;
+        border-radius: 8px;
+        font-size: 16px;
+        color: #6C5B7B;
+        font-weight: bold;
+        font-family: '제주 고딕';
+        text-align: center;
+        cursor: pointer;
+    }
+
+    #displaymap{
+        width: 80%
+    }
+.findRoute input[type=button] ,.calculate input[type=button]{
+       background-color: #FFF;
+        border: 2.5px solid rgb(108,92,124);
+        width:170px;
+        height: 35px;
+        border-radius: 8px;
+        font-size: 16px;
+        color: #6C5B7B;
+        font-weight: bold;
+        font-family: '제주 고딕';
+        text-align: center;
+        cursor: pointer;
+    }
+    select{
+        width: 200px;
+        height: 30px;
+        padding-left: 10px;
+        font-size: 18px;
+        color: #6C5B7B;
+        border: 2px solid rgb(143,170,220);
+        border-radius: 3px;
+        font-weight: bold;
+        font-family: '제주 고딕';
+        cursor: pointer;
+    }
+
+    .calculate{
+        margin-bottom: 10px;
+        margin-left: 10%;
+    }
+
+    .findRoute{
+
+        margin-left: 10%;
+    }
+
+        input[type=radio]{
+display:inline-block;
+    width:19px;
+    height:19px;
+    margin:-2px 10px 0 0;
+    vertical-align:middle;
+    background:url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/210284/check_radio_sheet.png) -38px top no-repeat;
+    cursor:pointer;
+    }
+
+
+footer{
+    margin-top:3%;
+    margin-bottom: 3%;
+    line-height: 3;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    font-family: '제주 고딕';
+    color:rgb(127,127,127);
+    text-shadow: 0 0 5px rgb(244,177,131);  
+
+}

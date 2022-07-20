@@ -1,0 +1,477 @@
+﻿<!DOCTYPE html>
+
+
+<!--
+1. 출발지 입력(n개)
+2. 모임 목적 선택
+3. 모임 목적에 따라 해당장소(DB-grouppoi)에 있는) 위경도 불러오기
+
+4. 출발지부터 3의 각 위경도[0~end] 까지의 총 소요시간 계산(반복문)
+
+5. 가장 짧은 총 소요시간이 걸리는 위경도를 찾음
+6. 출발지로부터 5.의 위경도까지의 경로 안내
+
+-->
+
+<html>
+<head>
+	<title>졸업 작품전 7조 LinkUs</title>
+	<style>
+		#map
+		{
+			height: 50%;
+		}
+		html, body 
+		{
+			height: 100%;
+			margin: 0;
+			padding: 0;
+		}
+
+	</style>
+
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<script src="jquery-3.2.1.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/lodash/4.17.4/lodash.min.js"></script>>
+
+	<script type="text/javascript">
+		var oTbl; //textboxrow
+		var partino = 0; //모임 참석자
+
+		//Row 추가
+		function insRow()
+		{
+			oTbl = document.getElementById("addTable");
+			var oRow = oTbl.insertRow();
+  			oRow.onmouseover=function(){oTbl.clickedRowIndex=this.rowIndex}; //clickedRowIndex - 클릭한 Row의 위치를 확인;
+  			var oCell = oRow.insertCell();
+
+  			//삽입될 Form Tag
+  			var frmTag = "<input type=textbox name=addText id=parti"+partino+"> ";
+  			frmTag += "<input type=button value='삭제' onClick='removeRow()' style='background:#FFF'>";
+  			oCell.innerHTML = frmTag;
+
+  			
+  			//console.log("partino="+partino);
+  			//console.log(document.getElementById('parti'+partino).value);
+  			partino=partino+1;
+  		}
+
+  		//Row 삭제
+  		function removeRow() 
+  		{
+  			oTbl.deleteRow(oTbl.clickedRowIndex);
+  			partino=partino-1;
+  			//console.log("partino="+partino);
+  		}
+
+
+  		var latitude = new Array();
+  		var longitude = new Array();
+
+  		function getData() //위경도 데이터 받아오기
+  		{
+  			if(document.getElementsByName("radiobtn")[0].checked){var typeno = document.getElementById("placeno").value;}
+  			else if(document.getElementsByName("radiobtn")[1].checked){var typeno = document.getElementById("purposeno").value;}
+
+  			console.log("typeno="+typeno);
+
+  			return jQuery.ajax({
+  				type: "POST",
+				data: 'typeno='+typeno, // <-- 넘겨주는 data
+				url: "getData.php",
+				cache: false,
+			}).then(function (res) {
+				// 성공시 action
+				var arrStr = res.split('<br>');
+
+				for(var i=0;i<arrStr.length-1;i++) //위경도 저장
+				{	
+					//if(arrStr[i]==undefined) console.log(i);
+					var point = arrStr[i].split(',');
+					//배열에 저장
+					latitude.push(point[0]);
+					longitude.push(point[1]);
+				}
+				//위경도 확인
+				console.log(latitude);
+				console.log(longitude);
+
+				if(latitude[0]!=undefined) //자료가 있을떄만
+				{
+					makeMaker(latitude, longitude); //지도위에 Maker표시
+				}
+				else
+				{
+					alert("데이터가 없습니다");
+				}
+				
+			}).catch(function (err) {
+				console.error(err);
+			});	
+		}
+
+		var map;
+
+		function makeMaker(latitude, longitude) //POI밀집지역 Maker표시
+		{
+			//중심구하기
+			var sumlati = 0.0;
+			var sumlong = 0.0;
+
+			for (var i = 0; i < latitude.length; i++)
+			{
+				sumlati += Number(latitude[i]);
+				sumlong += Number(longitude[i]);
+			}
+
+			var averlati = sumlati / latitude.length;
+			var averlong = sumlong / latitude.length;
+
+			console.log("averpoint : "+ averlati, averlong);
+			var averpoint = new google.maps.LatLng(averlati,averlong);
+
+			map.setCenter(averpoint);
+			map.setZoom(12);
+			
+			for(var i=0;i<latitude.length;i++)
+			{
+				//console.log(latitude[i], longitude[i]);
+				var point = {lat: Number(latitude[i]), lng: Number(longitude[i])};
+
+				var marker = new google.maps.Marker({ //Marker표시
+					position: point,
+					map: map
+				});
+			}
+		}
+
+		var geocoder;
+		function initMap() 
+		{
+			geocoder = new google.maps.Geocoder();
+
+			map = new google.maps.Map(document.getElementById('map'), {
+				zoom: 14,
+				center: {lat: 37.5667, lng: 126.9784}
+			});
+		}
+		
+		var partilati = new Array(); //참가자 위도 들어갈 배열
+		var partilong = new Array(); //참가자 경도 들어갈 배열
+		function codeAddress() 
+		{ //참가자 위치 지도에 표시
+			console.log("partino : "+partino);
+			for(var i=0;i<partino;i++)
+			{
+				var address = document.getElementById('parti'+i).value;
+				//console.log(address);
+
+				var image = 'https://chart.googleapis.com/chart?' +
+            'chst=d_map_pin_letter&chld=O|FFFF00|000000'; //마커이미지
+            geocoder.geocode( { 'address': address}, function(results, status) 
+            {
+            	if (status == 'OK') 
+            	{
+						//console.log("lat:"+results[0].geometry.location.lat());
+						//console.log("lng:"+results[0].geometry.location.lng());
+						
+						partilati.push(results[0].geometry.location.lat()); //parti 배열에 지오코딩된 위치 결과를 넣음
+						partilong.push(results[0].geometry.location.lng()); //parti 배열에 지오코딩된 위치 결과를 넣음
+
+						//마커추가
+						//map.setCenter(results[0].geometry.location);
+						var marker = new google.maps.Marker({
+							map: map,
+							position: results[0].geometry.location,
+							icon: image
+						});
+					} 
+					else 
+					{
+						alert('Geocode was not successful for the following reason: ' + status);
+					}
+				});
+        }
+			//함수 안에서는 아직 partilat, partilng 배열에 값이 덜들어간 상태 
+		}
+
+		
+		
+
+
+		function calcTime(o_lati, o_long, d_lati, d_long, positionInfo) //소요시간 계산 ajax사용 
+		{
+			var origin = {lat: o_lati, lng: o_long};
+			var destination = {lat : d_lati, lng: d_long};
+
+			var service = new google.maps.DistanceMatrixService;
+			
+			var promi = new Promise(function(resolve, reject)
+			{
+				service.getDistanceMatrix({
+					origins: [origin],
+					destinations: [destination],
+					travelMode: 'TRANSIT',
+					unitSystem: google.maps.UnitSystem.METRIC,
+					avoidHighways: false,
+					avoidTolls: false
+				}, function(response, status) {
+					if (status !== 'OK') 
+					{
+						alert('Error was: ' + status);
+					} 
+					else 
+					{
+						var originList = response.originAddresses;
+						var destinationList = response.destinationAddresses;
+
+						var results = response.rows[0].elements;
+						//console.log(results[0].duration.text);
+						//console.log("calcTime : "+results[0].duration.value);
+
+						resolve({
+							duration: results[0].duration.value,
+							destPos: positionInfo.destPos,
+							sourcePos: positionInfo.sourcePos
+						});
+					}
+				});
+			});
+
+			return promi;
+		}
+		
+		var finlati; //최종 위경도
+		var finlong;
+		function decidePlace() //최적 장소계산
+		{
+			var kingGodPromises = [];
+			var sumTime = [];
+			for(var i = 0 ; i < latitude.length ; i++ )
+			{
+				var arr = new Array();
+				for(var j = 0 ; j < partilati.length ; j++)
+				{
+					//장소는 고정, 참가자의 위경도가 변화면서 소요시간의 합 계산
+					//console.log(j+"번째 참가자 위경도 : {"+partilati[j], partilong[j]+"}, "+i+"번째목적지 위경도 : {"+ latitude[i], longitude[i]+"}");
+					arr.push(calcTime(Number(partilati[j]), Number(partilong[j]), Number(latitude[i]), Number(longitude[i]), {sourcePos: j, destPos: i}));  
+				}
+				kingGodPromises.push(Promise.all(arr).then(function(durations)
+				{
+					//console.log("durations:", durations);
+					durations.forEach(function(duration) {
+						if(typeof sumTime[duration.destPos] === 'undefined') {
+							sumTime[duration.destPos] = duration.duration;
+						} else {
+							sumTime[duration.destPos] += duration.duration;	
+						}
+					})
+				}))
+			}
+			Promise.all(kingGodPromises).then(function() 
+			{
+				//leadTime.push(sumTime);
+				//console.log(i+"번째 장소의 total sumTime : "+sumTime);
+				console.log("sumTime : ",sumTime);
+				var finindex;
+				var mintime = _.min(sumTime);
+				sumTime.forEach(function(time, index){
+					if (mintime===time) finindex = index;
+				})
+				finlati = latitude[finindex];
+				finlong = longitude[finindex];
+
+				console.log(finlati, finlong);
+
+				var image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png'; //마커이미지
+				var finpoint = new google.maps.LatLng(finlati,finlong);
+				map.setCenter(finpoint);
+				var marker = new google.maps.Marker({
+					map: map,
+					position: finpoint,
+					icon: image
+				});
+			})
+		}
+		//directionsService, directionsDisplay
+		function calculateAndDisplayRoute() //경로 
+		{	
+			var display = document.getElementById('displaymap');
+			var url1 = '<p><iframe width="600" height="450" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/directions?';
+			var url2 = '&mode=transit&key=AIzaSyBGhdrggquJnkOv4MP5JfWVGweRGuTlBDo" allowfullscreen></iframe></p>'
+			
+			for(var i = 0; i<partilati.length; i++)
+			{
+				display.innerHTML += "<p>"+(i+1)+"번째 모임 참석자의 경로 : </p>"
+				display.innerHTML += url1+'origin='+partilati[i]+'%2C%20'+partilong[i]+'&destination='+finlati+'%2C%20'+finlong+url2;
+			}
+			
+			/*
+			directionsService.route({
+           origin: {lat: 37.5657, lng: 126.9666},  // 서대문역주변
+           destination: {lat: finlati, lng: finlong},  // 명동역 주변
+           travelMode: 'TRANSIT',
+           transitOptions: {
+           	modes: ['BUS','SUBWAY']}
+           },function(response, status) {
+           	if (status == 'OK') {
+           		directionsDisplay.setDirections(response);
+           	} else {
+           		window.alert('Directions request failed due to ' + status);
+           	}
+           });*/
+       }
+
+
+		//https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=37.5657,126.9666&destinations=37.561,126.9863&key=AIzaSyBl5eg4ImZbuijtgb7RruJRaefZfPtWlV0
+		//AIzaSyBl5eg4ImZbuijtgb7RruJRaefZfPtWlV0
+	</script>
+	<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBl5eg4ImZbuijtgb7RruJRaefZfPtWlV0&callback=initMap">
+	</script>
+
+</head>
+
+
+
+<body>
+	<header id="home" class="home-section">
+		<div class="seoulmap">
+			<img src="image/seoulmap.png" width="600" height="200">
+		</div>
+		<div class="smallpoi">
+			<img src="image/POI1.png" width="46" height="63">
+		</div>
+		<div class="smallpoi2">
+			<img src="image/POI1.png" width="46" height="63">
+		</div>
+		<div class="smallpoi3">
+			<img src="image/POI1.png" width="46" height="63">
+		</div>
+		<div class="smallpoi4">
+			<img src="image/POI1.png" width="46" height="63">
+		</div>
+		<div class="middlepoi">
+			<img src="image/POI2.png" width="70" height="97">
+		</div>
+		<div class="linkus">
+			<img src="image/linkus.png" width="800" height="194">
+		</div>
+		<div class="start">
+			<a href="#letstart"><img src="image/start.png" width="206" height="89"></a>
+		</div>
+	</header> <!-- 헤더 추가했어용/* -->
+	<div id="AboutLinkus"> 
+		
+		<div class="About">
+			<img src="image/about.png" width="395" height="117" >	
+		</div>
+		<div class="bus">
+			<img src="image/bus.png" width="295" height="294">
+		</div>		
+		<div class="distri">
+			<img src="image/distribution.png" width="295" height="294">
+		</div>		
+		<div class="time">
+			<img src="image/time.png" width="295" height="294">
+		</div>	
+		<div class="poi">
+			<img src="image/poidata.png" width="295" height="294">
+		</div>
+		<div class="intro">
+			<img src="image/intro.png" width="1025" height="400">
+		</div>
+	</div> <!-- 이부분도 추가했어용/* -->
+	
+	
+	<div id="right-panel"></div>
+	<div id= "letstart">
+		<img src="image/letstart.png" width="395" height="117">
+	</div><!-- 이부분도 추가했어용/* -->
+
+	<div id="map"></div>
+	
+	<link rel="stylesheet" type="text/css" href="style.css">
+
+
+	<div class = "body-wrapper">
+
+		<div class = "input"> 1. 모임 목적을 선택해주세요 </div><!-- 이부분도 추가했어용/* -->
+		<div class = "style">
+			<input type="radio" id="radioid" name="radiobtn" value="1"> 장소에 따라
+			<input type="radio" id="radioid" name="radiobtn" value="2"> 유형에 따라
+		</div><!-- 단어 수정했어용/* -->
+
+		<div class = "type">
+			<select id="placeno">
+				<option value="1">빵집</option>
+				<option value="2">바</option>
+				<option value="3">카페</option>
+				<option value="4">운동장</option>
+				<option value="5">백화점</option>
+				<option value="6">도서관</option>
+				<option value="7">영화관</option>
+				<option value="8">공원</option>
+				<option value="9">음식점</option>
+				<option value="10">쇼핑몰</option>
+				<option value="11">한식</option>
+				<option value="12">일식</option>
+				<option value="13">중식</option>
+				<option value="14">중식</option>
+				<option value="15">양식</option>
+				<option value="16">패스트푸드</option>
+			</select>
+
+
+			<select id="purposeno">
+				<option value="51">브런치</option>
+				<option value="52">점심</option>
+				<option value="53">저녁</option>
+				<option value="54">팀플</option>
+				<option value="55">데이트, 친구, 가족</option>
+				<option value="56">쇼핑</option>
+				<option value="57">음식</option>
+				<option value="58">힐링</option>
+				<option value="59">파티</option>
+				<option value="60">회의</option>
+				<option value="61">동창회, 친목모임</option>
+			</select>
+
+			<input type="button" value="확인" onclick="Javascript:getData();"/>
+
+		</div>
+
+		<div class = "participant">
+			<p>2. 모임 참석자들의 위치를 입력해주세요</p>
+			<input name="addButton" type="button" onClick="insRow()" value="인원수 추가 및 위치입력"/ >
+			<table id="addTable"></table>
+			<input name="putposition"type="button" value="모임 참석자들 위치 표시" onclick="Javascript:codeAddress();"/> 
+		</div> <!-- 문장 추가 및 수정했어용/* -->
+		
+		<div class = "calculate">
+			<p>3. 지도 위에 최적의 장소를 표시해줍니다</p>
+			<input type="button" value="표시하기" onclick="Javascript:decidePlace();"/>
+		</div><!-- 문장 수정했어용/* -->
+
+		<div class = "findRoute">
+		<p>4. 모임 참석자 별로 경로를 안내해줍니다</p>
+			<input type="button" value="경로 안내하기" onclick="Javascript:calculateAndDisplayRoute();"/>
+		</div>	<!-- 문장 수정했어용/* -->	
+
+		<div id="displaymap"></div>
+
+	</div>
+
+</body>
+
+<footer>
+	<div id=resolution>고민은 이제 그만!</br>
+		나만 멀리 떨어져있다고 너무 억울해 하지 마세요!</br>
+		LINKUS가 해결해드립니다♥
+		<img src="image/logo.png" width="57" height="38" >	
+	</div>
+</footer> <!-- 여기도 추가했어용/* -->
+
+</html>
